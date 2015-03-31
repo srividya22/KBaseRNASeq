@@ -1,13 +1,6 @@
+#!/usr/bin/python
 #*****************************************************************************
-#  errors.py (part of the blacktie package)
-#
-#  (c) 2013 - Augustine Dunn
-#  James Laboratory
-#  Department of Biochemistry and Molecular Biology
-#  University of California Irvine
-#  wadunn83@gmail.com
-#
-#  Licenced under the GNU General Public License 3.0 license.
+#  errors.py
 #******************************************************************************
 
 """
@@ -21,9 +14,6 @@ import warnings
 class BlacktieError(StandardError):
     """Base class for exceptions in the blacktie package."""
     pass
-
-
-
 
 class SystemCallError(BlacktieError):
     """Error raised when a problem occurs while attempting to run an external system call.
@@ -46,8 +36,6 @@ class SystemCallError(BlacktieError):
             return """ERROR in %s:\n %s.\nRETURN_STATE: %s.""" % (self.filename,
                                                                 self.strerror.strip('\n'),
                                                                 self.errno)
-
-
 class SanityCheckError(BlacktieError):
     """When a 'state check' comes back as conflicting or nonsensical."""
     pass
