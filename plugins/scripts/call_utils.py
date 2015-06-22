@@ -16,8 +16,6 @@ import socket
 import shutil
 from collections import defaultdict
 
-from mako.template import Template
-
 from bunch import Bunch
 
 from misc import email_notification
@@ -250,39 +248,6 @@ class BaseCall(object):
             self.log_msg(log_msg=err_msg)
         else:
             pass
-
-    def build_qsub(self):
-        """
-        Builds and writes this CallObject's qsub script to current working directory
-        using options provided under the "qsub_options" sub-tree in the yaml config file.
-        """
-        nicknames = {'tophat': 'th',
-                     'cufflinks': 'cl',
-                     'cuffmerge': 'cm',
-                     'cuffdiff': 'cd', }
-
-        qsub_options = self.yargs.qsub_options
-
-        # set keyword args for template
-        kw = Bunch()
-        kw.queues = qsub_options.queues
-        kw.datahome = qsub_options.datahome
-        kw.core_range = qsub_options.core_range
-        kw.email_addy = self.email_info.email_to
-        kw.call_id = self.call_id
-        job_name = "%s_%s" % (nicknames[self.prog_name], '_'.join(self.call_id.split('_')[1:]))
-        kw.job_name = job_name
-        kw.out_dir = self.out_dir
-        kw.ld_library_path = qsub_options.ld_library_path
-
-        # need to make sure we use the number of cores that the SGE gave us
-        kw.cmd_str = self.cmd_string.replace('-p %s' % (self.opt_dict['p']), '-p $CORES')
-
-        qsub_template = Template(filename=qsub_options.template)
-        out_file = open('%s.qsub.sh' % self.call_id, 'w')
-        qsub_string = qsub_template.render(**kw)
-        out_file.write(qsub_string)
-        out_file.close()
 
     def execute(self):
         """

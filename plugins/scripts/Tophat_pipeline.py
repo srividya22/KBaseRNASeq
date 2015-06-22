@@ -58,7 +58,7 @@ def main():
     parser.add_argument('--hide-logs', action='store_true', default=False,
                         help="""Make your log directories hidden to keep a tidy 'looking' base directory. (default:
                         %(default)s)""")
-    parser.add_argument('--mode', type=str, choices=['analyze', 'dry_run', 'qsub_script'], default='analyze',
+    parser.add_argument('--mode', type=str, choices=['analyze', 'dry_run'], default='analyze',
                         help="""1) 'analyze': run the analysis pipeline. 2) 'dry_run': walk through all steps that
                         would be run and print out the command lines; however, do not send the commands to the
                         system to be run. 3) 'qsub_script': generate bash scripts suitable to be sent to a compute
