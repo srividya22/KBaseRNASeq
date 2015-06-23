@@ -116,67 +116,67 @@ def main():
         # seems to use only one processor no matter the value of -p you give it and
         # doesn't seem to consume massive amounts of memory 
         print "[Note] Starting cufflinks step.\n"
-        try:
-            if args.mode == 'dry_run':
-                raise errors.BlacktieError("dry run")
+        
+        if args.mode == 'dry_run':
+        	raise errors.BlacktieError("dry run")
             
             #  TODO: on mac pprocess raised AttributeError "module" has no attrb "poll" or some crap
-            try:
-                queue = pprocess.Queue(limit=yargs.cufflinks_options.p)
-            except AttributeError as exc:
-                if 'poll' in str(exc):
-                    raise(errors.BlacktieError('no poll'))
-                else:
-                     raise
-
-            def run_cufflinks_call(cufflinks_call):
-                """
-                function to start each parallel cufflinks_call inside the parallel job server.
-                """
-                cufflinks_call.execute()
-                return cufflinks_call
-
-            def change_processor_count(cufflinks_call):
-                """
-                Since we will run multiple instances of CufflinksCall at once, reduce
-                the number of processors any one system call thinks it can use.
-                """
-                cufflinks_call.opt_dict['p'] = 2
-                cufflinks_call.construct_options_list()
-                cufflinks_call.options_list.extend([cufflinks_call.accepted_hits])
-                cufflinks_call.arg_str = ' '.join(cufflinks_call.options_list)
-                return cufflinks_call
-
-            execute = queue.manage(pprocess.MakeParallel(run_cufflinks_call))
-            jobs = []
-            for condition in yargs.condition_queue:
-                cufflinks_call = CufflinksCall(yargs, run_id, run_logs, conditions=condition,
-                                               mode=args.mode)
-                cufflinks_call = change_processor_count(cufflinks_call)
-                jobs.append(cufflinks_call)
-                execute(cufflinks_call)
-
-            # record the cufflinks_call objects
-            for call in queue:
-                yargs.call_records[call.call_id] = call
-
-        except (NameError, errors.BlacktieError) as exc:
-
-            if ("'pprocess' is not defined" in str(exc)) or (str(exc) == "dry run") or (str(exc) == 'no poll'):
-                pass
-            else:
-                raise
+#            try:
+#                queue = pprocess.Queue(limit=yargs.cufflinks_options.p)
+#            except AttributeError as exc:
+#                if 'poll' in str(exc):
+#                    raise(errors.BlacktieError('no poll'))
+#                else:
+#                     raise
+#
+#            def run_cufflinks_call(cufflinks_call):
+#                """
+#                function to start each parallel cufflinks_call inside the parallel job server.
+#                """
+#                cufflinks_call.execute()
+#                return cufflinks_call
+#
+#            def change_processor_count(cufflinks_call):
+#                """
+#                Since we will run multiple instances of CufflinksCall at once, reduce
+#                the number of processors any one system call thinks it can use.
+#                """
+#                cufflinks_call.opt_dict['p'] = 2
+#                cufflinks_call.construct_options_list()
+#                cufflinks_call.options_list.extend([cufflinks_call.accepted_hits])
+#                cufflinks_call.arg_str = ' '.join(cufflinks_call.options_list)
+#                return cufflinks_call
+#
+#            execute = queue.manage(pprocess.MakeParallel(run_cufflinks_call))
+#            jobs = []
+#            for condition in yargs.condition_queue:
+#                cufflinks_call = CufflinksCall(yargs, run_id, run_logs, conditions=condition,
+#                                               mode=args.mode)
+#                cufflinks_call = change_processor_count(cufflinks_call)
+#                jobs.append(cufflinks_call)
+#                execute(cufflinks_call)
+#
+#            # record the cufflinks_call objects
+#            for call in queue:
+#                yargs.call_records[call.call_id] = call
+#
+#        except (NameError, errors.BlacktieError) as exc:
+#
+#            if ("'pprocess' is not defined" in str(exc)) or (str(exc) == "dry run") or (str(exc) == 'no poll'):
+#                pass
+#            else:
+#                raise
             
-            print "Running cufflinks in serial NOT parallel.\n"
+    	print "Running cufflinks in serial NOT parallel.\n"
             # loop through the queued conditions and send reports for cufflinks    
-            for condition in yargs.condition_queue:   
+        for condition in yargs.condition_queue:   
                 # Prep cufflinks_call
-                cufflinks_call = CufflinksCall(yargs,run_id, run_logs, conditions=condition,
+        	cufflinks_call = CufflinksCall(yargs,run_id, run_logs, conditions=condition,
                                                mode=args.mode)
                 cufflinks_call.execute()
 
                 # record the cufflinks_call object
-                yargs.call_records[cufflinks_call.call_id] = cufflinks_call
+        yargs.call_records[cufflinks_call.call_id] = cufflinks_call
     else:
         print "[Note] Skipping cufflinks step.\n"
 

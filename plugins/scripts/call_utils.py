@@ -398,7 +398,7 @@ class TophatCall(BaseCall):
         option = self.prog_yargs.positional_args.singleend_reads
         if option == 'from_conditions':
             singleend_reads = self._conditions['singleend_reads']
-            return "%s" % (','.join(singleend_reads))
+            return singleend_reads
         else:
             return option
 
