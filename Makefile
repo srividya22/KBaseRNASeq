@@ -2,11 +2,11 @@ TOP_DIR = ../..
 DEPLOY_RUNTIME=/kb/runtime
 TARGET ?= /kb/deployment
 include $(TOP_DIR)/tools/Makefile.common
-SERVICE_SPEC = Transform.spec
-SERVICE_NAME = Transform
-SERVICE_DIR_NAME = transform
+SERVICE_SPEC = KBaseRNASeq.spec
+SERVICE_NAME = KBaseRNASeq
+SERVICE_DIR_NAME = KBaseRNASeq
 SERVICE_DIR = $(TARGET)/services/$(SERVICE_NAME)
-SERVICE_PORT = 7778
+SERVICE_PORT = 7997
 
 DIR = $(shell pwd)
 
