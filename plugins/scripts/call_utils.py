@@ -630,10 +630,10 @@ class CuffmergeCall(BaseCall):
         # set up options for program call
         self.opt_dict = self.init_opt_dict()
         self.opt_dict['o'] = self.out_dir
-	if 'ref-gtf' in self.prog_yargs:
-        	self.opt_dict['ref-gtf'] = self.get_gtf_anno()
-        if 'ref-sequence' in self.prog_yargs:
-		self.opt_dict['ref-sequence'] = self.get_genome()
+	if 'gtf' in self.prog_yargs:
+        	self.opt_dict['gtf'] = self.get_gtf_anno()
+        if 'reference' in self.prog_yargs:
+		self.opt_dict['reference'] = self.get_genome()
         self.construct_options_list()
 
         # now the positional args
@@ -657,7 +657,7 @@ class CuffmergeCall(BaseCall):
         """
         Handles ``yaml_config.cuffmerge_options.ref-gtf: from_conditions``.
         """
-        option = self.prog_yargs['ref-gtf']
+        option = self.prog_yargs['gtf']
         if option == 'from_conditions':
             # Make sure all conditions agree on anno.gtf
             gtf_path = set([c['gtf_annotation'] for c in self._conditions])
@@ -675,7 +675,7 @@ class CuffmergeCall(BaseCall):
         """
         Handles ``yaml_config.cuffmerge_options.ref-sequence: from_conditions``.
         """
-        option = self.prog_yargs['ref-sequence']
+        option = self.prog_yargs['reference']
         if option == 'from_conditions':
             # Make sure all conditions agree on their genome seq
             genome_path = set([c['genome_seq'] for c in self._conditions])
@@ -695,24 +695,21 @@ class CuffmergeCall(BaseCall):
         Handles ``yaml_config.cuffmerge_options.positional_args.assembly_list: from_conditions``.
         """
         option = self.prog_yargs.positional_args.assembly_list
-        if option == 'from_conditions':
-            paths = []
-            for condition in self._conditions:
-                gtf_path = self.get_cuff_gtf_path(condition)
+        #if option == 'from_conditions':
+        paths = []
+        for gtf_path in option:
+         	#gtf_path = self.get_cuff_gtf_path(condition)
                 paths.append(gtf_path)
-            mkdirp(self.out_dir)
-            assembly_list_file = open("%s/assembly_list.txt" % (self.out_dir.rstrip('/')), 'w')
-            assembly_list_file.write("\n".join(paths))
-            assembly_list_file.close()
+        mkdirp(self.out_dir)
+        assembly_list_file = open("%s/assembly_list.txt" % (self.out_dir.rstrip('/')), 'w')
+        assembly_list_file.write("\n".join(paths))
+        assembly_list_file.close()
 
-            if self.mode == 'dry_run':
+        if self.mode == 'dry_run':
                 shutil.rmtree(self.out_dir)
-            else:
-                pass
-
-            return os.path.abspath(assembly_list_file.name)
         else:
-            return option
+                pass
+        return os.path.abspath(assembly_list_file.name)
 
     def get_cuff_gtf_path(self, condition):
         """
